@@ -4,7 +4,7 @@
       "esModuleInterop": true,
       "target": "es2021",
       "sourceMap": true,
-      "outDir": "dist"
+      "outDir": "public"
     },
     "lib": ["es2015"]
   }

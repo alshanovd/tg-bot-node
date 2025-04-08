@@ -4,15 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "vercel dev",
+    "serve-local": "tsc --skipLibCheck && node dist/index.js",
+    "deploy": "vercel",
+    "build": "tsc --skipLibCheck"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "dotenv": "^16.4.7",
+    "node-telegram-bot-api": "^0.66.0",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0"
+    "@types/node": "^22.14.0",
+    "@types/node-telegram-bot-api": "^0.64.8"
   }
 }
