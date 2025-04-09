@@ -7,7 +7,7 @@
     "serve": "vercel dev",
     "serve-local": "tsc --skipLibCheck && node dist/index.js",
     "deploy": "vercel",
-    "build": "tsc --skipLibCheck"
+    "build": "tsc --skipLibCheck && touch public/index.html"
   },
   "keywords": [],
   "author": "",
