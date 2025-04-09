@@ -1,26 +1,18 @@
-import TelegramBot from "node-telegram-bot-api";
+import { Telegraf } from "telegraf";
+import { message } from "telegraf/filters";
 
-const token = process.env.BOT_TOKEN;
+const bot = new Telegraf(process.env.BOT_TOKEN);
+const webhook = {};
 
-const bot = new TelegramBot(token);
+bot.on(message("text"), (ctx) => ctx.reply("Hello"));
 
-bot.onText(/\/echo (.+)/, (msg, match) => {
-  // 'msg' is the received Message from Telegram
-  // 'match' is the result of executing the regexp above on the text content
-  // of the message
+// Start webhook via launch method (preferred)
+bot.launch({
+  webhook: {
+    // Public domain for webhook; e.g.: example.com
+    domain: "https://tg-bot-node.vercel.app/",
 
-  const chatId = msg.chat.id;
-  const resp = match[1]; // the captured "whatever"
-
-  // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, resp);
-});
-
-// Listen for any kind of message. There are different kinds of
-// messages.
-bot.on("message", (msg) => {
-  const chatId = msg.chat.id;
-
-  // send a message to the chat acknowledging receipt of their message
-  bot.sendMessage(chatId, "Received your message 123123" + msg.text);
+    // Port to listen on; e.g.: 8080
+    port: 80,
+  },
 });
