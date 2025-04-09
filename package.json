@@ -7,7 +7,7 @@
     "serve": "vercel dev",
     "serve-local": "tsc --skipLibCheck && node dist/index.js",
     "deploy": "vercel",
-    "build": "tsc --skipLibCheck && touch public/index.html"
+    "build": "tsc --skipLibCheck && touch public/index.html && echo \"<a href=\"http://t.me/mm1234_test_bot\">TG bot</a>\" >> public/index.html"
   },
   "keywords": [],
   "author": "",
