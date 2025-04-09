@@ -2,9 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 
 const token = process.env.BOT_TOKEN;
 
-const bot = new TelegramBot(token, {
-  polling: true,
-});
+const bot = new TelegramBot(token);
 
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
