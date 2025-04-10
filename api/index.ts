@@ -23,8 +23,8 @@ bot.action("cal123", async (ctx) => {
 });
 
 bot.command("one", async (ctx) => {
-  messageIds.push(ctx.message.message_id);
-  await ctx.reply("inline Keyboard", buttons);
+  const ctx2 = await ctx.reply("inline Keyboard", buttons);
+  messageIds.push(ctx2.message_id);
 });
 
 bot.hears("button1", async (ctx) => {
