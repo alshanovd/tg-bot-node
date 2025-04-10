@@ -37,13 +37,13 @@ bot.action("callback_data", async (ctx) => {
   await ctx.reply("triggereeeed");
 });
 
-bot.on(message("text"), async (ctx) => {
-  await ctx.reply("Hello " + ctx.chat.id);
-  await bot.telegram.setChatMenuButton({
-    chatId: ctx.chat.id,
-    menuButton: { type: "default" },
-  });
-});
+// bot.on(message("text"), async (ctx) => {
+//   await ctx.reply("Hello " + ctx.chat.id);
+//   await bot.telegram.setChatMenuButton({
+//     chatId: ctx.chat.id,
+//     menuButton: { type: "default" },
+//   });
+// });
 
 bot.action("start", async (ctx) => {
   await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
