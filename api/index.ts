@@ -8,6 +8,7 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
 };
 
 bot.on(message("text"), async ({ reply }) => {
+  await reply("Hello! Here are your buttons");
   return await reply(
     "some text",
     Markup.keyboard([
