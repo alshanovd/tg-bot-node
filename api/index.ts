@@ -1,4 +1,4 @@
-import { Telegraf } from "telegraf";
+import { Markup, Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -15,7 +15,7 @@ bot.on(message("text"), async (ctx) => {
   });
 });
 
-bot.command("start", async (ctx) => {
+bot.action("start", async (ctx) => {
   await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
   await ctx.reply("start invoked");
 });
