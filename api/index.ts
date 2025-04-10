@@ -51,7 +51,7 @@ bot.hears(process.env.PIN, async (ctx) => {
 
 bot.on(message("text"), async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
-  await ctx.reply(cookie);
+  await ctx.reply(ctx.cookie);
 
   // const form = getFormData(ctx.message.text);
   // await ctx.reply("form data" + new URLSearchParams(form as any).toString());
