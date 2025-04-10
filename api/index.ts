@@ -11,6 +11,7 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   port: 4321,
 };
 const url = process.env.URL;
+let cookie = "";
 
 // const messageIds = [];
 
@@ -34,7 +35,8 @@ bot.hears(process.env.PIN, async (ctx) => {
 
   try {
     const respond = await axios.post(url + "/login", form);
-    await ctx.reply("Авторизация успешна. Кому выдать ключик?");
+    cookie = respond.headers["set-cookie"][0];
+    await ctx.reply("Авторизация успешна. Кому выдать ключик?" + cookie);
   } catch (e) {
     console.log(e);
     await ctx.reply("Не удалось авторизоваться");
@@ -46,7 +48,9 @@ bot.on(message("text"), async (ctx) => {
 
   const form = getFormData(ctx.message.text);
   try {
-    const response = await axios.post(url + "/xui/inbound/add", form);
+    const response = await axios.post(url + "/xui/inbound/add", form, {
+      Cookie: cookie,
+    } as any);
     await ctx.reply(JSON.stringify(response.data));
   } catch (e) {
     await ctx.reply(
