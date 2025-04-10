@@ -7,6 +7,36 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   port: 4321,
 };
 
+bot.use(Telegraf.log());
+
+const buttons = Markup.inlineKeyboard([
+  [{ hide: false, text: "test1", callback_data: "callback_data" }],
+  [{ hide: false, text: "test2", callback_data: "callback_data222" }],
+]);
+
+bot.command("onetime", async ({ reply }) => {
+  await reply(
+    "one time keyboard",
+    Markup.keyboard([
+      ["/one", "/two", "/three"],
+      ["test", "test2"],
+    ])
+      .oneTime()
+      .resize()
+  );
+});
+
+bot.command("one", async ({ reply }) => {
+  await reply("inline Keyboard", buttons);
+});
+
+bot.hears("test", ({ reply }) => reply("test is heard!"));
+
+bot.action("callback_data", async (ctx) => {
+  await ctx.answerCbQuery();
+  await ctx.reply("triggereeeed");
+});
+
 bot.on(message("text"), async (ctx) => {
   await ctx.reply("Hello " + ctx.chat.id);
   await bot.telegram.setChatMenuButton({
