@@ -1,5 +1,8 @@
+import axios from "axios";
 import { Markup, Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
+
+axios.defaults.withCredentials = true;
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const webhook: Telegraf.LaunchOptions["webhook"] = {
@@ -16,6 +19,28 @@ const buttons = Markup.inlineKeyboard([
   ],
   [{ hide: false, text: "test2", callback_data: "callback_data222" }],
 ]);
+
+bot.command("start", async (ctx) => {
+  await ctx.reply("Введи пин-код");
+});
+
+bot.hears("1234", async (ctx) => {
+  await ctx.reply("Пробуем авторизоваться");
+  const form = new FormData();
+  form.append("username", "admin");
+  form.append("password", "Admin#@!");
+
+  try {
+    const respond = await axios.post("http://193.42.112.80:65000/login", form);
+    console.log(respond.headers);
+    console.log(respond.headers["set-cookie"]);
+    console.log(respond.data);
+    await ctx.reply("Авторизация успешна. Кому выдать ключик?");
+  } catch (e) {
+    console.log(e);
+    await ctx.reply("Не удалось авторизоваться");
+  }
+});
 
 bot.action("cal123", async (ctx) => {
   Markup.removeKeyboard();
