@@ -7,7 +7,7 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   port: 4321,
 };
 
-bot.command("buttons", async ({ reply }) => {
+bot.hears("buttons", async ({ reply }) => {
   return await reply(
     "some text",
     Markup.keyboard([
