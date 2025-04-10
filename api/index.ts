@@ -8,16 +8,16 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
 };
 
 bot.on(message("text"), async ({ reply }) => {
-  await reply("Hello! Here are your buttons");
-  return await reply(
-    "some text",
-    Markup.keyboard([
-      ["button1", "button2"],
-      ["button3", "button4", "button5"],
-    ])
-      .oneTime()
-      .resize()
-  );
+  return await reply("Hello! Here are your buttons");
+  // return await reply(
+  //   "some text",
+  //   Markup.keyboard([
+  //     ["button1", "button2"],
+  //     ["button3", "button4", "button5"],
+  //   ])
+  //     .oneTime()
+  //     .resize()
+  // );
 });
 
 // bot.use(Telegraf.log());
