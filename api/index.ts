@@ -10,14 +10,20 @@ interface MyContext<U extends Update = Update> extends Context<U> {
 
 axios.defaults.withCredentials = true;
 
-const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN);
+const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN, {
+  telegram: { webhookReply: false },
+});
 bot.use(session({ defaultSession: () => ({ cookies: "" }) }));
 const webhook: Telegraf.LaunchOptions["webhook"] = {
   domain: process.env.DOMAIN,
   port: 4321,
 };
 const url = process.env.URL;
-let cookie = "";
+
+bot.use(async (ctx) => {
+  await ctx.reply("inside use");
+  await ctx.reply(ctx.cookie);
+});
 
 // const messageIds = [];
 
@@ -52,20 +58,17 @@ bot.on(message("text"), async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
   await ctx.reply(ctx.cookie);
 
-  // const form = getFormData(ctx.message.text);
-  // await ctx.reply("form data" + new URLSearchParams(form as any).toString());
+  const form = getFormData(ctx.message.text);
+  await ctx.reply("form data" + new URLSearchParams(form as any).toString());
   try {
-    const response = await axios.post(
-      url + "/xui/inbound/add",
-      {},
-      {
-        headers: { Cookie: ctx.cookie },
-      }
-    );
+    const response = await axios.post(url + "/xui/inbound/add", form, {
+      headers: { Cookie: ctx.cookie },
+    });
     await ctx.reply(JSON.stringify(response.data));
   } catch (e) {
     await ctx.reply(
-      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова."
+      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +
+        JSON.stringify(e)
     );
   }
 });
