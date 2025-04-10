@@ -7,25 +7,32 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   port: 4321,
 };
 
-bot.on(message("text"), async (ctx) => {
-  await ctx.reply("Hello! Here are your buttons");
-  await ctx.reply(
-    "some text",
-    Markup.keyboard([
-      ["button1", "button2"],
-      ["button3", "button4", "button5"],
-    ])
-      .oneTime()
-      .resize()
-  );
-});
+// bot.on(message("text"), async (ctx) => {
+//   await ctx.reply("Hello! Here are your buttons");
+//   await ctx.reply(
+//     "some text",
+//     Markup.keyboard([
+//       ["button1", "button2"],
+//       ["button3", "button4", "button5"],
+//     ])
+//       .oneTime()
+//       .resize()
+//   );
+// });
 
 // bot.use(Telegraf.log());
 
-// const buttons = Markup.inlineKeyboard([
-//   [{ hide: false, text: "test1", callback_data: "callback_data" }],
-//   [{ hide: false, text: "test2", callback_data: "callback_data222" }],
-// ]);
+const buttons = Markup.inlineKeyboard([
+  [
+    { hide: false, text: "test1", callback_data: "callback_data" },
+    { hide: false, text: "none", callback_data: "cal123" },
+  ],
+  [{ hide: false, text: "test2", callback_data: "callback_data222" }],
+]);
+
+bot.action("cal123", async (ctx) => {
+  return await ctx.reply("cal123");
+});
 
 // bot.command("onetime", async ({ reply }) => {
 //   await reply(
@@ -37,9 +44,9 @@ bot.on(message("text"), async (ctx) => {
 //   );
 // });
 
-// bot.command("one", async ({ reply }) => {
-//   await reply("inline Keyboard", buttons);
-// });
+bot.command("one", async (ctx) => {
+  await ctx.reply("inline Keyboard", buttons);
+});
 
 // bot.command("buttons", async ({ reply }) => {
 //   await reply("inline Keyboard", buttons);
@@ -52,10 +59,10 @@ bot.on(message("text"), async (ctx) => {
 //   );
 // });
 
-// bot.action("callback_data", async (ctx) => {
-//   await ctx.answerCbQuery();
-//   await ctx.reply("triggereeeed");
-// });
+bot.action("callback_data", async (ctx) => {
+  await ctx.answerCbQuery();
+  await ctx.reply("triggereeeed");
+});
 
 // bot.on(message("text"), async (ctx) => {
 //   await ctx.reply("Hello " + ctx.chat.id);
@@ -65,9 +72,9 @@ bot.on(message("text"), async (ctx) => {
 //   });
 // });
 
-// bot.action("callback_data222", async (ctx) => {
-//   await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
-//   await ctx.reply("start invoked");
-// });
+bot.action("callback_data222", async (ctx) => {
+  await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
+  await ctx.reply("delete invoked");
+});
 
 bot.launch({ webhook });
