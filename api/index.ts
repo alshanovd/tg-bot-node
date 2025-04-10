@@ -20,11 +20,11 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
 };
 const url = process.env.URL;
 
-bot.use(async (ctx, next) => {
-  await ctx.reply("inside use");
-  await ctx.reply(ctx.cookie);
-  await next();
-});
+// bot.use(async (ctx, next) => {
+//   await ctx.reply("inside use");
+//   await ctx.reply(ctx.cookie);
+//   await next();
+// });
 
 // const messageIds = [];
 
@@ -55,24 +55,24 @@ bot.hears(process.env.PIN, async (ctx) => {
   }
 });
 
-bot.on(message("text"), async (ctx) => {
-  await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
-  await ctx.reply(ctx.cookie);
+// bot.on(message("text"), async (ctx) => {
+//   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
+//   await ctx.reply(ctx.cookie);
 
-  const form = getFormData(ctx.message.text);
-  await ctx.reply("form data" + new URLSearchParams(form as any).toString());
-  try {
-    const response = await axios.post(url + "/xui/inbound/add", form, {
-      headers: { Cookie: ctx.cookie },
-    });
-    await ctx.reply(JSON.stringify(response.data));
-  } catch (e) {
-    await ctx.reply(
-      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +
-        JSON.stringify(e)
-    );
-  }
-});
+//   const form = getFormData(ctx.message.text);
+//   await ctx.reply("form data" + new URLSearchParams(form as any).toString());
+//   try {
+//     const response = await axios.post(url + "/xui/inbound/add", form, {
+//       headers: { Cookie: ctx.cookie },
+//     });
+//     await ctx.reply(JSON.stringify(response.data));
+//   } catch (e) {
+//     await ctx.reply(
+//       "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +
+//         JSON.stringify(e)
+//     );
+//   }
+// });
 
 // bot.action("cal123", async (ctx) => {
 //   Markup.removeKeyboard();
