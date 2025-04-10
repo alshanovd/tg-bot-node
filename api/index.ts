@@ -7,17 +7,17 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   port: 4321,
 };
 
-bot.on(message("text"), async ({ reply }) => {
-  await reply("Hello! Here are your buttons");
-  // await reply(
-  //   "some text",
-  //   Markup.keyboard([
-  //     ["button1", "button2"],
-  //     ["button3", "button4", "button5"],
-  //   ])
-  //     .oneTime()
-  //     .resize()
-  // );
+bot.on(message("text"), async (ctx) => {
+  await ctx.reply("Hello! Here are your buttons");
+  await ctx.reply(
+    "some text",
+    Markup.keyboard([
+      ["button1", "button2"],
+      ["button3", "button4", "button5"],
+    ])
+      .oneTime()
+      .resize()
+  );
 });
 
 // bot.use(Telegraf.log());
