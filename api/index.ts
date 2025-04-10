@@ -15,14 +15,13 @@ const buttons = Markup.inlineKeyboard([
 ]);
 
 bot.command("onetime", async ({ reply }) => {
+  console.log("onetime is heard??");
   await reply(
     "one time keyboard",
     Markup.keyboard([
       ["/one", "/two", "/three"],
       ["test", "test2"],
     ])
-      .oneTime()
-      .resize()
   );
 });
 
@@ -31,12 +30,17 @@ bot.command("one", async ({ reply }) => {
 });
 
 bot.command("buttons", async ({ reply }) => {
+  console.log(buttons, "buttons");
   await reply("inline Keyboard", buttons);
 });
 
-bot.hears("test", ({ reply }) =>
-  reply("test is heard!", Markup.keyboard([["one11", "two222", "three33"]]))
-);
+bot.hears("test", async ({ reply }) => {
+  console.log("test is heard??");
+  await reply(
+    "test is heard!",
+    Markup.keyboard([["one11", "two222", "three33"]])
+  );
+});
 
 bot.action("callback_data", async (ctx) => {
   await ctx.answerCbQuery();
@@ -51,7 +55,7 @@ bot.action("callback_data", async (ctx) => {
 //   });
 // });
 
-bot.action("start", async (ctx) => {
+bot.action("callback_data222", async (ctx) => {
   await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
   await ctx.reply("start invoked");
 });
