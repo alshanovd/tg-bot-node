@@ -54,6 +54,7 @@ bot.on(message("text"), async (ctx) => {
   await ctx.reply(cookie);
 
   const form = getFormData(ctx.message.text);
+  await ctx.reply("form data" + new URLSearchParams(form as any).toString());
   try {
     const response = await axios.post(url + "/xui/inbound/add", form, {
       headers: { Cookie: ctx.cookie },
