@@ -7,20 +7,7 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   port: 4321,
 };
 
-// bot.on(message("text"), async (ctx) => {
-//   await ctx.reply("Hello! Here are your buttons");
-//   await ctx.reply(
-//     "some text",
-//     Markup.keyboard([
-//       ["button1", "button2"],
-//       ["button3", "button4", "button5"],
-//     ])
-//       .oneTime()
-//       .resize()
-//   );
-// });
-
-// bot.use(Telegraf.log());
+const messageIds = [];
 
 const buttons = Markup.inlineKeyboard([
   [
@@ -35,26 +22,13 @@ bot.action("cal123", async (ctx) => {
   return await ctx.reply("cal123");
 });
 
-// bot.command("onetime", async ({ reply }) => {
-//   await reply(
-//     "one time keyboard",
-//     Markup.keyboard([
-//       ["/one", "/two", "/three"],
-//       ["test", "test2"],
-//     ])
-//   );
-// });
-
 bot.command("one", async (ctx) => {
+  messageIds.push(ctx.message.message_id);
   await ctx.reply("inline Keyboard", buttons);
 });
 
-// bot.command("buttons", async ({ reply }) => {
-//   await reply("inline Keyboard", buttons);
-// });
-
-bot.hears("button1", async ({ reply }) => {
-  await reply(
+bot.hears("button1", async (ctx) => {
+  await ctx.reply(
     "button1 is heard!",
     Markup.keyboard([["one11", "two222", "three33"]]).oneTime()
   );
@@ -65,16 +39,8 @@ bot.action("callback_data", async (ctx) => {
   await ctx.reply("triggereeeed");
 });
 
-// bot.on(message("text"), async (ctx) => {
-//   await ctx.reply("Hello " + ctx.chat.id);
-//   await bot.telegram.setChatMenuButton({
-//     chatId: ctx.chat.id,
-//     menuButton: { type: "default" },
-//   });
-// });
-
 bot.action("callback_data222", async (ctx) => {
-  await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
+  await bot.telegram.deleteMessages(ctx.chat.id, messageIds);
   await ctx.reply("delete invoked");
   await ctx.reply(
     "one time buttons",
