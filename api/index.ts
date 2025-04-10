@@ -43,21 +43,23 @@ bot.hears(process.env.PIN, async (ctx) => {
   }
 });
 
-// bot.on(message("text"), async (ctx) => {
-//   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
+bot.on(message("text"), async (ctx) => {
+  await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
 
-//   const form = getFormData(ctx.message.text);
-//   try {
-//     const response = await axios.post(url + "/xui/inbound/add", form, {
-//       Cookie: cookie,
-//     } as any);
-//     await ctx.reply(JSON.stringify(response.data));
-//   } catch (e) {
-//     await ctx.reply(
-//       "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова."
-//     );
-//   }
-// });
+  const form = getFormData(ctx.message.text);
+  try {
+    const response = await axios.post(url + "/xui/inbound/add", form, {
+      headers: {
+        Cookie: cookie,
+      },
+    });
+    await ctx.reply(JSON.stringify(response.data));
+  } catch (e) {
+    await ctx.reply(
+      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова."
+    );
+  }
+});
 
 // bot.action("cal123", async (ctx) => {
 //   Markup.removeKeyboard();
