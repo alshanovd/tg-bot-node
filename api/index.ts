@@ -53,12 +53,16 @@ bot.on(message("text"), async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
   await ctx.reply(cookie);
 
-  const form = getFormData(ctx.message.text);
-  await ctx.reply("form data" + new URLSearchParams(form as any).toString());
+  // const form = getFormData(ctx.message.text);
+  // await ctx.reply("form data" + new URLSearchParams(form as any).toString());
   try {
-    const response = await axios.post(url + "/xui/inbound/add", form, {
-      headers: { Cookie: ctx.cookie },
-    });
+    const response = await axios.post(
+      url + "/xui/inbound/add",
+      {},
+      {
+        headers: { Cookie: ctx.cookie },
+      }
+    );
     await ctx.reply(JSON.stringify(response.data));
   } catch (e) {
     await ctx.reply(
