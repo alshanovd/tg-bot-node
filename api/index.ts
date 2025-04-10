@@ -42,10 +42,9 @@ bot.hears(process.env.PIN, async (ctx) => {
   try {
     const respond = await axios.post(url + "/login", form);
     ctx.cookie = respond.headers["set-cookie"][0];
-    await ctx.reply("Авторизация успешна. Кому выдать ключик?" + cookie);
+    await ctx.reply("Авторизация успешна. Кому выдать ключик?" + ctx.cookie);
   } catch (e) {
-    console.log(e);
-    await ctx.reply("Не удалось авторизоваться");
+    await ctx.reply("Не удалось авторизоваться. Ошибка - " + JSON.stringify(e));
   }
 });
 
