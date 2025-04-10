@@ -1,11 +1,17 @@
 import axios from "axios";
-import { Markup, Telegraf } from "telegraf";
+import { Markup, Telegraf, session, type Context } from "telegraf";
+import type { Update } from "telegraf/types";
 import { message } from "telegraf/filters";
 import { getFormData } from "./form";
 
+interface MyContext<U extends Update = Update> extends Context<U> {
+  cookie: string;
+}
+
 axios.defaults.withCredentials = true;
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN);
+bot.use(session({ defaultSession: () => ({ cookies: "" }) }));
 const webhook: Telegraf.LaunchOptions["webhook"] = {
   domain: process.env.DOMAIN,
   port: 4321,
@@ -35,7 +41,7 @@ bot.hears(process.env.PIN, async (ctx) => {
 
   try {
     const respond = await axios.post(url + "/login", form);
-    cookie = respond.headers["set-cookie"][0];
+    ctx.cookie = respond.headers["set-cookie"][0];
     await ctx.reply("Авторизация успешна. Кому выдать ключик?" + cookie);
   } catch (e) {
     console.log(e);
@@ -45,13 +51,12 @@ bot.hears(process.env.PIN, async (ctx) => {
 
 bot.on(message("text"), async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
+  await ctx.reply(cookie);
 
   const form = getFormData(ctx.message.text);
   try {
     const response = await axios.post(url + "/xui/inbound/add", form, {
-      headers: {
-        Cookie: cookie,
-      },
+      headers: { Cookie: ctx.cookie },
     });
     await ctx.reply(JSON.stringify(response.data));
   } catch (e) {
