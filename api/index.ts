@@ -7,8 +7,20 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   port: 4321,
 };
 
-bot.on(message("text"), (ctx) => ctx.reply("Hello"));
+bot.on(message("text"), (ctx) => ctx.reply("Hello" + ctx.chat.id));
 
-bot.launch({
-  webhook,
-});
+bot.command(
+  "/start",
+  (ctx) => {
+    ctx.reply("lets get started");
+    bot.telegram.setChatMenuButton({
+      chatId: ctx.chat.id,
+      menuButton: { type: "default" },
+    });
+  },
+  (ctx) => {
+    ctx.reply("second callback?");
+  }
+);
+
+bot.launch({ webhook });
