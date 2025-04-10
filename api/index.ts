@@ -15,7 +15,7 @@ bot.on(message("text"), async (ctx) => {
   });
 });
 
-bot.command("/start", async (ctx) => {
+bot.command("start", async (ctx) => {
   await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
   await ctx.reply("start invoked");
 });
