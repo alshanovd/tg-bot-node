@@ -13,6 +13,7 @@ bot.on(message("text"), (ctx) => {
     chatId: ctx.chat.id,
     menuButton: { type: "default" },
   });
+  bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
 });
 
 bot.launch({ webhook });
