@@ -2,6 +2,10 @@ import { Markup, Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+const webhook: Telegraf.LaunchOptions["webhook"] = {
+  domain: "https://tg-bot-node.vercel.app/",
+  port: 4321,
+};
 
 bot.use(Telegraf.log());
 
@@ -10,66 +14,46 @@ const buttons = Markup.inlineKeyboard([
   [{ hide: false, text: "test2", callback_data: "callback_data222" }],
 ]);
 
-bot.command("onetime", ({ reply }) =>
-  reply(
-    "One time keyboard",
-    Markup.keyboard(["/simple", "/inline", "/pyramid"]).oneTime().resize()
-  )
-);
-
-bot.command("custom", ({ reply }) => {
-  return reply(
-    "Custom buttons keyboard",
+bot.command("onetime", async ({ reply }) => {
+  await reply(
+    "one time keyboard",
     Markup.keyboard([
-      ["🔍 Search", "😎 Popular"], // Row1 with 2 buttons
-      ["☸ Setting", "📞 Feedback"], // Row2 with 2 buttons
-      ["📢 Ads", "⭐️ Rate us", "👥 Share"], // Row3 with 3 buttons
+      ["/one", "/two", "/three"],
+      ["test", "test2"],
     ])
       .oneTime()
       .resize()
   );
 });
 
-bot.hears("🔍 Search", (ctx) => ctx.reply("Yay!"));
-bot.hears("📢 Ads", (ctx) => ctx.reply("Free hugs. Call now!"));
-
-// bot.command('simple', (ctx) => {
-//   return ctx.replyWithHTML('<b>Coke</b> or <i>Pepsi?</i>', Extra.markup(
-//     Markup.keyboard(['Coke', 'Pepsi'])
-//   ))
-// })
-
-// bot.command('inline', (ctx) => {
-//   return ctx.reply('<b>Coke</b> or <i>Pepsi?</i>', Extra.HTML().markup((m) =>
-//     m.inlineKeyboard([
-//       m.callbackButton('Coke', 'Coke'),
-//       m.callbackButton('Pepsi', 'Pepsi')
-//     ])))
-// })
-
-bot.command("random", (ctx) => {
-  return ctx.reply("random example", buttons);
+bot.command("one", async ({ reply }) => {
+  await reply("inline Keyboard", buttons);
 });
 
-bot.action("Dr Pepper", (ctx, next) => {
-  return ctx.reply("👍").then(() => next());
+bot.command("buttons", async ({ reply }) => {
+  await reply("inline Keyboard", buttons);
 });
 
-bot.action("plain", async (ctx) => {
+bot.hears("test", ({ reply }) =>
+  reply("test is heard!", Markup.keyboard([["one11", "two222", "three33"]]))
+);
+
+bot.action("callback_data", async (ctx) => {
   await ctx.answerCbQuery();
-  await ctx.editMessageCaption("Caption");
+  await ctx.reply("triggereeeed");
 });
 
-// bot.action('italic', async (ctx) => {
-//   await ctx.answerCbQuery()
-//   await ctx.editMessageCaption('_Caption_', Extra.markdown().markup(Markup.inlineKeyboard([
-//     Markup.callbackButton('Plain', 'plain'),
-//     Markup.callbackButton('* Italic *', 'italic')
-//   ])))
-// })
+// bot.on(message("text"), async (ctx) => {
+//   await ctx.reply("Hello " + ctx.chat.id);
+//   await bot.telegram.setChatMenuButton({
+//     chatId: ctx.chat.id,
+//     menuButton: { type: "default" },
+//   });
+// });
 
-bot.action(/.+/, (ctx) => {
-  return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`);
+bot.action("start", async (ctx) => {
+  await bot.telegram.deleteMessages(ctx.chat.id, [1, 2, 3, 4, 5, 10]);
+  await ctx.reply("start invoked");
 });
 
-bot.launch();
+bot.launch({ webhook });
