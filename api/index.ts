@@ -20,9 +20,10 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
 };
 const url = process.env.URL;
 
-bot.use(async (ctx) => {
+bot.use(async (ctx, next) => {
   await ctx.reply("inside use");
   await ctx.reply(ctx.cookie);
+  await next();
 });
 
 // const messageIds = [];
