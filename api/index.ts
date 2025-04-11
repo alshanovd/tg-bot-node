@@ -15,7 +15,7 @@ bot.command("start", async (ctx) => {
   await ctx.reply("Введи пин-код");
 });
 
-bot.command(`/${process.env.PIN}`, async (ctx) => {
+bot.command(`${process.env.PIN}`, async (ctx) => {
   await ctx.reply("Пробуем авторизоваться...");
   const form = new FormData();
   form.append("username", process.env.LOGIN);
