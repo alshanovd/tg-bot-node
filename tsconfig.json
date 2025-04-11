@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "module": "NodeNext",
+      "module": "CommonJS",
       "esModuleInterop": true,
       "target": "es2021",
       "sourceMap": true,

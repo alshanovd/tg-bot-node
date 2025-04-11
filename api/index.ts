@@ -2,6 +2,7 @@ import axios from "axios";
 import { Markup, Telegraf, session, type Context } from "telegraf";
 import type { Update } from "telegraf/types";
 import { message } from "telegraf/filters";
+// import { getFormData } from "./formdata";
 
 interface MyContext<U extends Update = Update> extends Context<U> {
   session: {
@@ -57,14 +58,40 @@ bot.hears(process.env.PIN, async (ctx) => {
   }
 });
 
-bot.on(message("text"), async (ctx) => {
+bot.hears("test", async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
   await ctx.reply(ctx.session.cookie);
 
-  const form = getFormData(ctx.message.text);
-  await ctx.reply("form data" + new URLSearchParams(form as any).toString());
+  // const form = getFormData(ctx.message.text);
+  let port = Math.round(Math.random() * 65535);
+  do {
+    port = Math.round(Math.random() * 65535);
+  } while (port.toString() !== process.env.PORT);
+
+  const formdata = new FormData();
+  formdata.append("up", "0");
+  formdata.append("down", "0");
+  formdata.append("total", "0");
+  formdata.append("remark", "test");
+  formdata.append("enable", "true");
+  formdata.append("expiryTime", "0");
+  formdata.append("listen", "");
+  formdata.append("port", port.toString());
+  formdata.append("protocol", "vless");
+  formdata.append(
+    "settings",
+    '{  "clients": [    {      "id": "84a41128-dbb2-4ff6-96e7-d89d9104674e",      "flow": "xtls-rprx-direct",      "email": "",      "limitIp": 0,      "totalGB": 0,      "expiryTime": ""    }  ],  "decryption": "none",  "fallbacks": []}'
+  );
+  formdata.append(
+    "streamSettings",
+    '{  "network": "tcp",  "security": "none",  "tcpSettings": {    "acceptProxyProtocol": false,    "header": {      "type": "none"    }  }}'
+  );
+  formdata.append(
+    "sniffing",
+    '{  "enabled": true,  "destOverride": [    "http",    "tls"  ]}'
+  );
   try {
-    const response = await axios.post(url + "/xui/inbound/add", form, {
+    const response = await axios.post(url + "/xui/inbound/add", formdata, {
       headers: { Cookie: ctx.session.cookie },
     });
     await ctx.reply(JSON.stringify(response.data));
@@ -75,6 +102,9 @@ bot.on(message("text"), async (ctx) => {
     );
   }
 });
+
+// bot.on(message("text"), async (ctx) => {
+// });
 
 // bot.action("cal123", async (ctx) => {
 //   Markup.removeKeyboard();
@@ -113,34 +143,3 @@ bot.on(message("text"), async (ctx) => {
 // });
 
 bot.launch({ webhook });
-
-function getFormData(remark: string): FormData {
-  let port = Math.round(Math.random() * 65535);
-  do {
-    port = Math.round(Math.random() * 65535);
-  } while (port.toString() !== process.env.PORT);
-
-  const formdata = new FormData();
-  formdata.append("up", "0");
-  formdata.append("down", "0");
-  formdata.append("total", "0");
-  formdata.append("remark", remark);
-  formdata.append("enable", "true");
-  formdata.append("expiryTime", "0");
-  formdata.append("listen", "");
-  formdata.append("port", port.toString());
-  formdata.append("protocol", "vless");
-  formdata.append(
-    "settings",
-    '{  "clients": [    {      "id": "84a41128-dbb2-4ff6-96e7-d89d9104674e",      "flow": "xtls-rprx-direct",      "email": "",      "limitIp": 0,      "totalGB": 0,      "expiryTime": ""    }  ],  "decryption": "none",  "fallbacks": []}'
-  );
-  formdata.append(
-    "streamSettings",
-    '{  "network": "tcp",  "security": "none",  "tcpSettings": {    "acceptProxyProtocol": false,    "header": {      "type": "none"    }  }}'
-  );
-  formdata.append(
-    "sniffing",
-    '{  "enabled": true,  "destOverride": [    "http",    "tls"  ]}'
-  );
-  return formdata;
-}
