@@ -5,7 +5,9 @@ import { message } from "telegraf/filters";
 import { getFormData } from "./form";
 
 interface MyContext<U extends Update = Update> extends Context<U> {
-  cookie: string;
+  session: {
+    cookie: string;
+  };
 }
 
 axios.defaults.withCredentials = true;
@@ -13,7 +15,7 @@ axios.defaults.withCredentials = true;
 const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN, {
   telegram: { webhookReply: false },
 });
-bot.use(session({ defaultSession: () => ({ cookies: "" }) }));
+bot.use(session());
 const webhook: Telegraf.LaunchOptions["webhook"] = {
   domain: process.env.DOMAIN,
   port: 4321,
@@ -48,8 +50,10 @@ bot.hears(process.env.PIN, async (ctx) => {
 
   try {
     const respond = await axios.post(url + "/login", form);
-    ctx.cookie = respond.headers["set-cookie"][0];
-    await ctx.reply("Авторизация успешна. Кому выдать ключик?" + ctx.cookie);
+    ctx.session.cookie = respond.headers["set-cookie"][0];
+    await ctx.reply(
+      "Авторизация успешна. Кому выдать ключик?" + ctx.session.cookie
+    );
   } catch (e) {
     await ctx.reply("Не удалось авторизоваться. Ошибка - " + JSON.stringify(e));
   }
