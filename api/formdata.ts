@@ -15,7 +15,7 @@ export function getFormData(remark: string): {
         id: "84a41128-dbb2-4ff6-96e7-d89d9104674e",
         flow: "xtls-rprx-direct",
         email: "",
-        limitIp: 0,
+        limitIp: 2,
         totalGB: 0,
         expiryTime: "",
       },
