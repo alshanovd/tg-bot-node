@@ -5,7 +5,6 @@ import { message } from "telegraf/filters";
 import { AddResponse } from "./add-reponse.model";
 import { getFormData } from "./formdata";
 import { concatKey } from "./utls";
-// import { getFormData } from "./formdata";
 
 interface MyContext<U extends Update = Update> extends Context<U> {
   session: {
@@ -61,10 +60,6 @@ bot.hears(process.env.PIN, async (ctx) => {
   }
 });
 
-// bot.hears("test", async (ctx) => {
-
-// });
-
 bot.on(message("text"), async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
   await ctx.reply(ctx.session.cookie);
@@ -88,7 +83,7 @@ bot.on(message("text"), async (ctx) => {
     } = response;
     const key = concatKey(protocol, id, port, remark);
     await ctx.reply(`Ключ для ${remark}:`);
-    await ctx.reply(`\`${key}\``);
+    await ctx.reply(`${key}`);
   } catch (e) {
     await ctx.reply(
       "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +
