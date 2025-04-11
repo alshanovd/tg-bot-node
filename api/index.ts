@@ -83,7 +83,9 @@ bot.on(message("text"), async (ctx) => {
     } = response;
     const key = concatKey(protocol, id, port, remark);
     await ctx.reply(`Ключ для ${remark}:`);
-    await ctx.reply(`${key}`);
+    await ctx.reply(`${key}`, {
+      entities: [{ type: "code", offset: 0, length: 100 }],
+    });
   } catch (e) {
     await ctx.reply(
       "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +

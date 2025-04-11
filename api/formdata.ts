@@ -36,7 +36,7 @@ export function getFormData(remark: string): {
   formdata.append("up", "0");
   formdata.append("down", "0");
   formdata.append("total", "0");
-  formdata.append("remark", "test");
+  formdata.append("remark", remark);
   formdata.append("enable", "true");
   formdata.append("expiryTime", "0");
   formdata.append("listen", "");
