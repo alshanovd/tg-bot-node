@@ -4,6 +4,7 @@ import type { Update } from "telegraf/types";
 import { message } from "telegraf/filters";
 import { AddResponse } from "./add-reponse.model";
 import { getFormData } from "./formdata";
+import { concatKey } from "./utls";
 // import { getFormData } from "./formdata";
 
 interface MyContext<U extends Update = Update> extends Context<U> {
@@ -60,11 +61,15 @@ bot.hears(process.env.PIN, async (ctx) => {
   }
 });
 
-bot.hears("test", async (ctx) => {
+// bot.hears("test", async (ctx) => {
+
+// });
+
+bot.on(message("text"), async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
   await ctx.reply(ctx.session.cookie);
 
-  const formdata = getFormData(ctx.message.text);
+  const { formdata, id } = getFormData(ctx.message.text);
 
   try {
     const response = await axios.post<AddResponse>(
@@ -78,11 +83,10 @@ bot.hears("test", async (ctx) => {
     if (!response.data.success) throw Error();
     const {
       data: {
-        obj: { protocol, id, port, remark },
+        obj: { protocol, port, remark },
       },
     } = response;
-    const host = protocol + "://" + id + "@" + process.env.HOST + ":" + port;
-    const key = host + "?type=tcp&security=none#" + remark;
+    const key = concatKey(protocol, id, port, remark);
     await ctx.reply(`Ключ для ${remark}:`);
     await ctx.reply(`\`${key}\``);
   } catch (e) {
@@ -92,9 +96,6 @@ bot.hears("test", async (ctx) => {
     );
   }
 });
-
-// bot.on(message("text"), async (ctx) => {
-// });
 
 // bot.action("cal123", async (ctx) => {
 //   Markup.removeKeyboard();
