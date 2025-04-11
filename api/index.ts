@@ -2,7 +2,7 @@ import axios from "axios";
 import { Markup, Telegraf, session, type Context } from "telegraf";
 import type { Update } from "telegraf/types";
 import { message } from "telegraf/filters";
-import { AddResponse } from "./reponse.model";
+import { AddResponse } from "./add-reponse.model";
 import { getFormData } from "./formdata";
 // import { getFormData } from "./formdata";
 
@@ -83,6 +83,7 @@ bot.hears("test", async (ctx) => {
     } = response;
     const host = protocol + "://" + id + "@" + process.env.HOST + ":" + port;
     const key = host + "?type=tcp&security=none#" + remark;
+    await ctx.reply(`Ключ для ${remark}:`);
     await ctx.reply(`\`${key}\``);
   } catch (e) {
     await ctx.reply(
