@@ -52,7 +52,7 @@ bot.on(message("text"), async (ctx) => {
     await ctx.reply("`" + key + "`", { parse_mode: "Markdown" });
   } catch (e) {
     await ctx.reply(
-      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят, либо что то еще. Попробуй снова."
+      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят, либо что то еще. Попробуй снова ввести пин-код."
     );
     await ctx.reply("```json\n" + JSON.stringify(e) + "\n```", {
       parse_mode: "Markdown",
