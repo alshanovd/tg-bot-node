@@ -32,11 +32,14 @@ bot.hears(process.env.PIN, async (ctx) => {
 });
 
 bot.on(message("text"), async (ctx) => {
-  await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
-
-  const { formdata, id } = getFormData(ctx.message.text);
-
+  const {
+    message: { text },
+  } = ctx;
+  await ctx.reply("Пробуем выдать ключик для " + text);
   try {
+    if (!text.trim()) throw Error();
+    const { formdata, id } = getFormData(text);
+
     const response = await addClientRequest(url, formdata, ctx.session.cookie);
     if (!response.data.success) throw Error();
     const {
@@ -46,12 +49,14 @@ bot.on(message("text"), async (ctx) => {
     } = response;
     const key = concatKey(protocol, id, port, remark);
     await ctx.reply(`Ключик для ${remark}:`);
-    await ctx.reply(`<code>${key}</code>`, { parse_mode: "Markdown" });
+    await ctx.reply("`" + key + "`", { parse_mode: "Markdown" });
   } catch (e) {
     await ctx.reply(
-      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка: " +
-        JSON.stringify(e)
+      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят, либо что то еще. Попробуй снова."
     );
+    await ctx.reply("`" + JSON.stringify(e) + "`", {
+      parse_mode: "Markdown",
+    });
   }
 });
 
