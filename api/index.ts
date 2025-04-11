@@ -63,10 +63,10 @@ bot.hears("test", async (ctx) => {
   await ctx.reply(ctx.session.cookie);
 
   // const form = getFormData(ctx.message.text);
-  let port = Math.round(Math.random() * 65535);
-  do {
-    port = Math.round(Math.random() * 65535);
-  } while (port.toString() !== process.env.PORT);
+  // let port = Math.round(Math.random() * 65535);
+  // do {
+  //   port = Math.round(Math.random() * 65535);
+  // } while (port.toString() !== process.env.PORT);
 
   const formdata = new FormData();
   formdata.append("up", "0");
@@ -76,7 +76,7 @@ bot.hears("test", async (ctx) => {
   formdata.append("enable", "true");
   formdata.append("expiryTime", "0");
   formdata.append("listen", "");
-  formdata.append("port", port.toString());
+  formdata.append("port", "8888");
   formdata.append("protocol", "vless");
   formdata.append(
     "settings",
