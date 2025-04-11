@@ -35,7 +35,7 @@ bot.on(message("text"), async (ctx) => {
   const {
     message: { text },
   } = ctx;
-  await ctx.reply("Пробуем выдать ключик для " + text);
+  await ctx.reply("Пробуем выдать ключик для " + text + "...");
   try {
     if (!text.trim()) throw Error();
     const { formdata, id } = getFormData(text);
@@ -54,7 +54,7 @@ bot.on(message("text"), async (ctx) => {
     await ctx.reply(
       "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят, либо что то еще. Попробуй снова."
     );
-    await ctx.reply("`" + JSON.stringify(e) + "`", {
+    await ctx.reply("```json\n" + JSON.stringify(e) + "\n```", {
       parse_mode: "Markdown",
     });
   }
