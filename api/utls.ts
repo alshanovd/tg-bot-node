@@ -1,3 +1,7 @@
+import axios from "axios";
+import { AddResponse } from "./models";
+import { Telegraf } from "telegraf";
+
 export function concatKey(
   protocol: string,
   id: string,
@@ -17,3 +21,18 @@ export function uuidv4() {
     ).toString(16)
   );
 }
+
+export async function addClientRequest(
+  url: string,
+  formdata: FormData,
+  cookie: string
+) {
+  return axios.post<AddResponse>(url + "/xui/inbound/add", formdata, {
+    headers: { Cookie: cookie },
+  });
+}
+
+export const webhookConfig: Telegraf.LaunchOptions["webhook"] = {
+  domain: process.env.DOMAIN,
+  port: 4321,
+};

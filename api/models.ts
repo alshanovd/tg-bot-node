@@ -1,3 +1,6 @@
+import { type Context } from "telegraf";
+import type { Update } from "telegraf/types";
+
 export interface AddResponse {
   success: boolean;
   msg: string;
@@ -17,5 +20,11 @@ export interface AddResponse {
     streamSettings: string;
     tag: string;
     sniffing: string;
+  };
+}
+
+export interface MyContext<U extends Update = Update> extends Context<U> {
+  session: {
+    cookie: string;
   };
 }
