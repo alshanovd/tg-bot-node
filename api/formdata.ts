@@ -2,17 +2,17 @@ export function getFormData(remark: string): FormData {
   let port = Math.round(Math.random() * 65535);
   do {
     port = Math.round(Math.random() * 65535);
-  } while (port.toString() !== process.env.PORT);
+  } while (port.toString() === process.env.PORT);
 
   const formdata = new FormData();
   formdata.append("up", "0");
   formdata.append("down", "0");
   formdata.append("total", "0");
-  formdata.append("remark", remark);
+  formdata.append("remark", "test");
   formdata.append("enable", "true");
   formdata.append("expiryTime", "0");
   formdata.append("listen", "");
-  formdata.append("port", port.toString());
+  formdata.append("port", "8888");
   formdata.append("protocol", "vless");
   formdata.append(
     "settings",

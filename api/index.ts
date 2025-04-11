@@ -2,6 +2,8 @@ import axios from "axios";
 import { Markup, Telegraf, session, type Context } from "telegraf";
 import type { Update } from "telegraf/types";
 import { message } from "telegraf/filters";
+import { AddResponse } from "./reponse.model";
+import { getFormData } from "./formdata";
 // import { getFormData } from "./formdata";
 
 interface MyContext<U extends Update = Update> extends Context<U> {
@@ -20,7 +22,7 @@ const webhook: Telegraf.LaunchOptions["webhook"] = {
   domain: process.env.DOMAIN,
   port: 4321,
 };
-const url = process.env.URL;
+const url = "http://" + process.env.HOST + ":" + process.env.PORT;
 
 // bot.use(async (ctx, next) => {
 //   await ctx.reply("inside use");
@@ -62,39 +64,26 @@ bot.hears("test", async (ctx) => {
   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
   await ctx.reply(ctx.session.cookie);
 
-  // const form = getFormData(ctx.message.text);
-  // let port = Math.round(Math.random() * 65535);
-  // do {
-  //   port = Math.round(Math.random() * 65535);
-  // } while (port.toString() !== process.env.PORT);
+  const formdata = getFormData(ctx.message.text);
 
-  const formdata = new FormData();
-  formdata.append("up", "0");
-  formdata.append("down", "0");
-  formdata.append("total", "0");
-  formdata.append("remark", "test");
-  formdata.append("enable", "true");
-  formdata.append("expiryTime", "0");
-  formdata.append("listen", "");
-  formdata.append("port", "8888");
-  formdata.append("protocol", "vless");
-  formdata.append(
-    "settings",
-    '{  "clients": [    {      "id": "84a41128-dbb2-4ff6-96e7-d89d9104674e",      "flow": "xtls-rprx-direct",      "email": "",      "limitIp": 0,      "totalGB": 0,      "expiryTime": ""    }  ],  "decryption": "none",  "fallbacks": []}'
-  );
-  formdata.append(
-    "streamSettings",
-    '{  "network": "tcp",  "security": "none",  "tcpSettings": {    "acceptProxyProtocol": false,    "header": {      "type": "none"    }  }}'
-  );
-  formdata.append(
-    "sniffing",
-    '{  "enabled": true,  "destOverride": [    "http",    "tls"  ]}'
-  );
   try {
-    const response = await axios.post(url + "/xui/inbound/add", formdata, {
-      headers: { Cookie: ctx.session.cookie },
-    });
+    const response = await axios.post<AddResponse>(
+      url + "/xui/inbound/add",
+      formdata,
+      {
+        headers: { Cookie: ctx.session.cookie },
+      }
+    );
     await ctx.reply(JSON.stringify(response.data));
+    if (!response.data.success) throw Error();
+    const {
+      data: {
+        obj: { protocol, id, port, remark },
+      },
+    } = response;
+    const host = protocol + "://" + id + "@" + process.env.HOST + ":" + port;
+    const key = host + "?type=tcp&security=none#" + remark;
+    await ctx.reply(`\`${key}\``);
   } catch (e) {
     await ctx.reply(
       "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +
