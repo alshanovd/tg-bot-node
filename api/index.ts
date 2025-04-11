@@ -51,32 +51,31 @@ bot.hears(process.env.PIN, async (ctx) => {
   try {
     const respond = await axios.post(url + "/login", form);
     ctx.session.cookie = respond.headers["set-cookie"][0];
-    await ctx.reply(
-      "Авторизация успешна. Кому выдать ключик?" + ctx.session.cookie
-    );
+    await ctx.reply("Авторизация успешна." + ctx.session.cookie);
+    await ctx.reply("Кому выдать ключик? Имя:");
   } catch (e) {
     await ctx.reply("Не удалось авторизоваться. Ошибка - " + JSON.stringify(e));
   }
 });
 
-// bot.on(message("text"), async (ctx) => {
-//   await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
-//   await ctx.reply(ctx.cookie);
+bot.on(message("text"), async (ctx) => {
+  await ctx.reply("Пробуем выдать ключик для " + ctx.message.text);
+  await ctx.reply(ctx.session.cookie);
 
-//   const form = getFormData(ctx.message.text);
-//   await ctx.reply("form data" + new URLSearchParams(form as any).toString());
-//   try {
-//     const response = await axios.post(url + "/xui/inbound/add", form, {
-//       headers: { Cookie: ctx.cookie },
-//     });
-//     await ctx.reply(JSON.stringify(response.data));
-//   } catch (e) {
-//     await ctx.reply(
-//       "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +
-//         JSON.stringify(e)
-//     );
-//   }
-// });
+  const form = getFormData(ctx.message.text);
+  await ctx.reply("form data" + new URLSearchParams(form as any).toString());
+  try {
+    const response = await axios.post(url + "/xui/inbound/add", form, {
+      headers: { Cookie: ctx.session.cookie },
+    });
+    await ctx.reply(JSON.stringify(response.data));
+  } catch (e) {
+    await ctx.reply(
+      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят. Попробуй снова. Ошибка - " +
+        JSON.stringify(e)
+    );
+  }
+});
 
 // bot.action("cal123", async (ctx) => {
 //   Markup.removeKeyboard();
