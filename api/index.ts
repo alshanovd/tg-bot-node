@@ -114,7 +114,7 @@ bot.on(message("text"), async (ctx) => {
 
 bot.launch({ webhook });
 
-export function getFormData(remark: string): FormData {
+function getFormData(remark: string): FormData {
   let port = Math.round(Math.random() * 65535);
   do {
     port = Math.round(Math.random() * 65535);
