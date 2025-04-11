@@ -15,7 +15,7 @@ axios.defaults.withCredentials = true;
 const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN, {
   telegram: { webhookReply: false },
 });
-bot.use(session());
+bot.use(session({ defaultSession: () => ({ cookie: "" }) }));
 const webhook: Telegraf.LaunchOptions["webhook"] = {
   domain: process.env.DOMAIN,
   port: 4321,
