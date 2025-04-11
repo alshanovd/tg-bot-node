@@ -12,7 +12,7 @@ export function getFormData(remark: string): FormData {
   formdata.append("enable", "true");
   formdata.append("expiryTime", "0");
   formdata.append("listen", "");
-  formdata.append("port", "8888");
+  formdata.append("port", port.toString());
   formdata.append("protocol", "vless");
   formdata.append(
     "settings",
