@@ -46,6 +46,7 @@ bot.command("delete", async (ctx) => {
     await ctx.reply("Список пользователей");
   } catch (e) {
     await ctx.reply("Ошибка получения списка пользователей.");
+    await ctx.reply("Ошибка получения списка пользователей.");
     await ctx.reply(
       // "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
       "```json\n" + JSON.stringify(e) + "\n```",
