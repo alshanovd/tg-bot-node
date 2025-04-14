@@ -2,7 +2,12 @@ import axios from "axios";
 import { Telegraf, session } from "telegraf";
 import { message } from "telegraf/filters";
 import { getFormData } from "./formdata";
-import { addClientRequest, concatKey, webhookConfig } from "./utls";
+import {
+  addClientRequest,
+  concatKey,
+  getClinetsRequest,
+  webhookConfig,
+} from "./utls";
 import { MyContext } from "./models";
 
 const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN, {
@@ -34,6 +39,9 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
 bot.command("delete", async (ctx) => {
   await ctx.reply("Запрашиваем список пользователей...");
   try {
+    const url = "";
+    const respond = await getClinetsRequest(url, ctx.session.cookie);
+    await ctx.reply(JSON.stringify(respond.data));
   } catch (e) {
     await ctx.reply("Ошибка получения списка пользователей.");
     await ctx.reply(
@@ -53,15 +61,16 @@ bot.on(message("text"), async (ctx) => {
   try {
     if (!text.trim()) throw Error();
     const { formdata, id } = getFormData(text);
-
     const response = await addClientRequest(url, formdata, ctx.session.cookie);
-    if (!response.data.success) throw Error();
+    if (!response.data.success) throw Error("response.data.success = false");
+
     const {
       data: {
         obj: { protocol, port, remark },
       },
     } = response;
     const key = concatKey(protocol, id, port, remark);
+
     await ctx.reply(`Ключик для ${remark}:`);
     await ctx.reply("`" + key + "`", { parse_mode: "Markdown" });
   } catch (e) {

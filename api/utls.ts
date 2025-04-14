@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Telegraf } from "telegraf";
-import { Add, Reponse } from "./models";
+import { Add, Inbound, Response } from "./models";
 
 export function concatKey(
   protocol: string,
@@ -27,13 +27,13 @@ export async function addClientRequest(
   formdata: FormData,
   cookie: string
 ) {
-  return axios.post<Reponse<Add>>(url + "/xui/inbound/add", formdata, {
+  return axios.post<Response<Add>>(url + "/xui/inbound/add", formdata, {
     headers: { Cookie: cookie },
   });
 }
 
 export async function getClinetsRequest(url: string, cookie: string) {
-  return axios.get<Reponse<Add>>(url + "/xui/inbound/list", {
+  return axios.get<Response<Inbound[]>>(url + "/xui/inbound/list", {
     headers: { Cookie: cookie },
   });
 }
