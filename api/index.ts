@@ -14,6 +14,7 @@ const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN, {
   telegram: { webhookReply: false },
 });
 bot.use(session({ defaultSession: () => ({ cookie: "" }) }));
+
 const url = "http://" + process.env.HOST + ":" + process.env.PORT;
 
 bot.command("start", async (ctx) => {
@@ -39,13 +40,13 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
 bot.command("delete", async (ctx) => {
   await ctx.reply("Запрашиваем список пользователей...");
   try {
-    const url = "";
     const respond = await getClinetsRequest(url, ctx.session.cookie);
     await ctx.reply(JSON.stringify(respond.data));
   } catch (e) {
     await ctx.reply("Ошибка получения списка пользователей.");
     await ctx.reply(
-      "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
+      // "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
+      "```json\n" + JSON.stringify(e) + "... \n```",
       {
         parse_mode: "Markdown",
       }
