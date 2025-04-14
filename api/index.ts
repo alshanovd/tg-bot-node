@@ -43,6 +43,7 @@ bot.command("delete", async (ctx) => {
   try {
     await ctx.reply(ctx.session.cookie);
     const respond = await getClinetsRequest(url, ctx.session.cookie);
+    await ctx.reply("Список пользователей");
     await ctx.reply(JSON.stringify(respond.data));
   } catch (e) {
     await ctx.reply("Ошибка получения списка пользователей.");
