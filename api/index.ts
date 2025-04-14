@@ -41,6 +41,7 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
 bot.command("delete", async (ctx) => {
   await ctx.reply("Запрашиваем список пользователей...");
   try {
+    await ctx.reply(ctx.session.cookie);
     const respond = await getClinetsRequest(url, ctx.session.cookie);
     await ctx.reply(JSON.stringify(respond.data));
   } catch (e) {
