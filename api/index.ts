@@ -44,12 +44,11 @@ bot.command("delete", async (ctx) => {
     await ctx.reply(ctx.session.cookie);
     const respond = await getClinetsRequest(url, ctx.session.cookie);
     await ctx.reply("Список пользователей");
-    await ctx.reply(JSON.stringify(respond));
   } catch (e) {
     await ctx.reply("Ошибка получения списка пользователей.");
     await ctx.reply(
       // "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
-      "```json\n" + JSON.stringify(e) + "... \n```",
+      "```json\n" + JSON.stringify(e) + "\n```",
       {
         parse_mode: "Markdown",
       }
