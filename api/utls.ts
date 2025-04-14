@@ -1,6 +1,6 @@
 import axios from "axios";
-import { AddResponse } from "./models";
 import { Telegraf } from "telegraf";
+import { Add, Reponse } from "./models";
 
 export function concatKey(
   protocol: string,
@@ -27,7 +27,13 @@ export async function addClientRequest(
   formdata: FormData,
   cookie: string
 ) {
-  return axios.post<AddResponse>(url + "/xui/inbound/add", formdata, {
+  return axios.post<Reponse<Add>>(url + "/xui/inbound/add", formdata, {
+    headers: { Cookie: cookie },
+  });
+}
+
+export async function getClinetsRequest(url: string, cookie: string) {
+  return axios.get<Reponse<Add>>(url + "/xui/inbound/list", {
     headers: { Cookie: cookie },
   });
 }
@@ -35,4 +41,13 @@ export async function addClientRequest(
 export const webhookConfig: Telegraf.LaunchOptions["webhook"] = {
   domain: process.env.DOMAIN,
   port: 4321,
+};
+
+export const handleError = async (e: object, ctx: any) => {
+  return await ctx.reply(
+    "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
+    {
+      parse_mode: "Markdown",
+    }
+  );
 };

@@ -31,6 +31,20 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
   }
 });
 
+bot.command("delete", async (ctx) => {
+  await ctx.reply("Запрашиваем список пользователей...");
+  try {
+  } catch (e) {
+    await ctx.reply("Ошибка получения списка пользователей.");
+    await ctx.reply(
+      "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
+      {
+        parse_mode: "Markdown",
+      }
+    );
+  }
+});
+
 bot.on(message("text"), async (ctx) => {
   const {
     message: { text },
