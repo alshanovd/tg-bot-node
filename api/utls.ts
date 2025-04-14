@@ -33,9 +33,14 @@ export async function addClientRequest(
 }
 
 export async function getClinetsRequest(url: string, cookie: string) {
-  return axios.get<Response<Inbound[]>>(url + "/xui/inbound/list", {
-    headers: { Cookie: cookie },
-  });
+  const listUrl = url + "/xui/inbound/list";
+  return axios.post<Response<Inbound[]>>(
+    listUrl,
+    {},
+    {
+      headers: { Cookie: cookie },
+    }
+  );
 }
 
 export const webhookConfig: Telegraf.LaunchOptions["webhook"] = {

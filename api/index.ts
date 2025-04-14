@@ -31,6 +31,7 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
     const respond = await axios.post(url + "/login", form);
     ctx.session.cookie = respond.headers["set-cookie"][0];
     await ctx.reply("Успешная авторизация!");
+    // [Выдаем ключик] или [Удаляем?]
     await ctx.reply("Кому выдать ключик? Напиши имя:");
   } catch (e) {
     await ctx.reply("Не удалось авторизоваться. Ошибка - " + JSON.stringify(e));
