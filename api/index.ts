@@ -28,12 +28,18 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
   form.append("password", process.env.PASSWORD);
 
   try {
+    console.log("try123");
     const respond = await axios.post(url + "/login", form);
-    ctx.session.cookie = respond.headers["set-cookie"][0];
+    if (respond.data.success) {
+      ctx.session.cookie = respond.headers["set-cookie"][0];
+    } else {
+      throw new Error("success: false");
+    }
     await ctx.reply("Успешная авторизация!");
     // [Выдаем ключик] или [Удаляем?]
     await ctx.reply("Кому выдать ключик? Напиши имя:");
   } catch (e) {
+    console.log(e);
     await ctx.reply("Не удалось авторизоваться. Ошибка - " + JSON.stringify(e));
   }
 });
@@ -44,6 +50,8 @@ bot.command("delete", async (ctx) => {
     await ctx.reply(ctx.session.cookie);
     const respond = await getClinetsRequest(url, ctx.session.cookie);
     await ctx.reply("Список пользователей");
+    console.log(respond.data.obj.map((o) => o.id));
+    await ctx.reply(JSON.stringify(respond.data.obj.map((o) => o.id)));
     // const keyboard = [Markup.button()];
   } catch (e) {
     await ctx.reply("Ошибка получения списка пользователей.");
@@ -91,3 +99,4 @@ bot.on(message("text"), async (ctx) => {
 });
 
 bot.launch({ webhook: webhookConfig });
+console.info("Launch successful!");
