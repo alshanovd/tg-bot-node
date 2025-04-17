@@ -7,6 +7,7 @@ import {
   concatKey,
   deleteClient,
   getClinetsRequest,
+  reduceFn,
   showError,
   webhookConfig,
 } from "./utls";
@@ -104,16 +105,10 @@ bot.action("delete_user", async (ctx) => {
   try {
     const respond = await getClinetsRequest(url, ctx.session.cookie);
     const buttons: InlineKeyboardButton.CallbackButton[][] =
-      respond.data.obj.reduce((buttons, user, i) => {
-        const row = Math.round(i / 3);
-        if (!buttons[row]) {
-          buttons[row] = [];
-        }
-        buttons[row].push(
-          Markup.button.callback(user.remark, "delete_" + user.id)
-        );
-        return buttons;
-      }, []);
+      respond.data.obj.reduce(
+        (buttons, user, i) => reduceFn(buttons, user, i),
+        []
+      );
     buttons.push([
       Markup.button.callback("Никого не удаляем", "delete_cancel"),
     ]);

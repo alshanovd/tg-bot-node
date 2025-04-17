@@ -6,7 +6,7 @@
   "scripts": {
     "ts": "tsc --watch",
     "node": "node --watch --env-file=.env.dev public/index.js",
-    "hook": "node --env-file=.env.dev sethook.js",
+    "hook": "node --env-file=.env sethook.js",
     "ngrok": "ngrok http http://localhost:8888",
     "serve": "vercel dev",
     "serve-local": "tsc --skipLibCheck && node dist/index.js",

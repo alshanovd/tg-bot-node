@@ -1,6 +1,7 @@
 import axios from "axios";
-import { Telegraf } from "telegraf";
+import { Markup, Telegraf } from "telegraf";
 import { Add, Inbound, Response } from "./models";
+import { InlineKeyboardButton } from "telegraf/types";
 
 export function concatKey(
   protocol: string,
@@ -70,4 +71,17 @@ export function showError(e: object): [string, object] {
       parse_mode: "Markdown",
     },
   ];
+}
+
+export function reduceFn(
+  buttons: InlineKeyboardButton.CallbackButton[][],
+  user: Inbound,
+  i: number
+) {
+  const row = Math.round(i / 3);
+  if (!buttons[row]) {
+    buttons[row] = [];
+  }
+  buttons[row].push(Markup.button.callback(user.remark, "delete_" + user.id));
+  return buttons;
 }
