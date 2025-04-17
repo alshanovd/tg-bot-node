@@ -5,6 +5,7 @@ import { getFormData } from "./formdata";
 import {
   addClientRequest,
   concatKey,
+  deleteButtons,
   deleteClient,
   getClinetsRequest,
   reduceFn,
@@ -104,14 +105,7 @@ bot.action("delete_user", async (ctx) => {
   ctx.session.deleteMsgs.push(title.message_id);
   try {
     const respond = await getClinetsRequest(url, ctx.session.cookie);
-    const buttons: InlineKeyboardButton.CallbackButton[][] =
-      respond.data.obj.reduce(
-        (buttons, user, i) => reduceFn(buttons, user, i),
-        []
-      );
-    buttons.push([
-      Markup.button.callback("Никого не удаляем", "delete_cancel"),
-    ]);
+    const buttons = deleteButtons(respond.data.obj);
     const list = await ctx.reply(
       "Кого удаляем?",
       Markup.inlineKeyboard(buttons)

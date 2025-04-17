@@ -85,3 +85,14 @@ export function reduceFn(
   buttons[row].push(Markup.button.callback(user.remark, "delete_" + user.id));
   return buttons;
 }
+
+export function deleteButtons(
+  users: Inbound[]
+): InlineKeyboardButton.CallbackButton[][] {
+  const buttons: InlineKeyboardButton.CallbackButton[][] = users.reduce(
+    (buttons, user, i) => reduceFn(buttons, user, i),
+    []
+  );
+  buttons.push([Markup.button.callback("Никого не удаляем", "delete_cancel")]);
+  return buttons;
+}
