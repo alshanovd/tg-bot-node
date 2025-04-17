@@ -5,15 +5,18 @@ import { getFormData } from "./formdata";
 import {
   addClientRequest,
   concatKey,
+  deleteClient,
   getClinetsRequest,
+  showError,
   webhookConfig,
 } from "./utls";
 import { MyContext } from "./models";
+import { InlineKeyboardButton, InlineKeyboardMarkup } from "telegraf/types";
 
 const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN, {
   telegram: { webhookReply: false },
 });
-bot.use(session({ defaultSession: () => ({ cookie: "" }) }));
+bot.use(session({ defaultSession: () => ({ cookie: "", deleteMsgs: [] }) }));
 
 const url = "http://" + process.env.HOST + ":" + process.env.PORT;
 
@@ -28,7 +31,6 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
   form.append("password", process.env.PASSWORD);
 
   try {
-    console.log("try123");
     const respond = await axios.post(url + "/login", form);
     if (respond.data.success) {
       ctx.session.cookie = respond.headers["set-cookie"][0];
@@ -36,32 +38,93 @@ bot.command(`${process.env.PIN}`, async (ctx) => {
       throw new Error("success: false");
     }
     await ctx.reply("Успешная авторизация!");
-    // [Выдаем ключик] или [Удаляем?]
-    await ctx.reply("Кому выдать ключик? Напиши имя:");
+    await ctx.reply(
+      "Что делаем?",
+      Markup.inlineKeyboard([
+        [Markup.button.callback("Показать всех", "all_users")],
+        [Markup.button.callback("Добавить пользователя", "add_user")],
+        [Markup.button.callback("Удалить пользователя", "delete_user")],
+      ])
+    );
   } catch (e) {
-    console.log(e);
-    await ctx.reply("Не удалось авторизоваться. Ошибка - " + JSON.stringify(e));
+    await ctx.reply(JSON.stringify(e));
   }
 });
 
-bot.command("delete", async (ctx) => {
-  await ctx.reply("Запрашиваем список пользователей...");
+bot.action("add_user", async (ctx) => {
+  await ctx.reply("Кому выдать ключик? Напиши имя:");
+});
+
+bot.action("all_users", async (ctx) => {
+  if (ctx.session.deleteMsgs.length) {
+    await ctx.deleteMessages(ctx.session.deleteMsgs);
+  }
+  const title = await ctx.reply("Запрашиваем список пользователей...");
+  ctx.session.deleteMsgs.push(title.message_id);
   try {
-    await ctx.reply(ctx.session.cookie);
     const respond = await getClinetsRequest(url, ctx.session.cookie);
-    await ctx.reply("Список пользователей");
-    console.log(respond.data.obj.map((o) => o.id));
-    await ctx.reply(JSON.stringify(respond.data.obj.map((o) => o.id)));
-    // const keyboard = [Markup.button()];
+    const list = await ctx.reply(
+      respond.data.obj.map((o) => o.remark).join("\n")
+    );
+    ctx.session.deleteMsgs.push(list.message_id);
+  } catch (e) {
+    await ctx.reply(...showError(e));
+  }
+});
+
+bot.action(/^delete_(\d+)$/, async (ctx) => {
+  if (ctx.session.deleteMsgs.length) {
+    await ctx.deleteMessages(ctx.session.deleteMsgs);
+  }
+  const id = ctx.match[1];
+  const cookie = ctx.session.cookie;
+  await ctx.reply("Удаляем пользователя с ID - " + id + "...");
+  try {
+    const respond = await deleteClient(url, id, cookie);
+    if (respond.data.success) {
+      await ctx.reply("Пользователь удален!");
+    }
+  } catch (e) {
+    await ctx.reply(...showError(e));
+  }
+});
+
+bot.action("delete_cancel", async (ctx) => {
+  if (ctx.session.deleteMsgs.length) {
+    await ctx.deleteMessages(ctx.session.deleteMsgs);
+  }
+});
+
+bot.action("delete_user", async (ctx) => {
+  if (ctx.session.deleteMsgs.length) {
+    await ctx.deleteMessages(ctx.session.deleteMsgs);
+  }
+  const title = await ctx.reply("Запрашиваем список пользователей...");
+  ctx.session.deleteMsgs.push(title.message_id);
+  try {
+    const respond = await getClinetsRequest(url, ctx.session.cookie);
+    const buttons: InlineKeyboardButton.CallbackButton[][] =
+      respond.data.obj.reduce((buttons, user, i) => {
+        const row = Math.round(i / 3);
+        if (!buttons[row]) {
+          buttons[row] = [];
+        }
+        buttons[row].push(
+          Markup.button.callback(user.remark, "delete_" + user.id)
+        );
+        return buttons;
+      }, []);
+    buttons.push([
+      Markup.button.callback("Никого не удаляем", "delete_cancel"),
+    ]);
+    const list = await ctx.reply(
+      "Кого удаляем?",
+      Markup.inlineKeyboard(buttons)
+    );
+    ctx.session.deleteMsgs.push(list.message_id);
   } catch (e) {
     await ctx.reply("Ошибка получения списка пользователей.");
-    await ctx.reply(
-      // "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
-      "```json\n" + JSON.stringify(e) + "\n```",
-      {
-        parse_mode: "Markdown",
-      }
-    );
+    await ctx.reply(...showError(e));
   }
 });
 
@@ -86,15 +149,8 @@ bot.on(message("text"), async (ctx) => {
     await ctx.reply(`Ключик для ${remark}:`);
     await ctx.reply("`" + key + "`", { parse_mode: "Markdown" });
   } catch (e) {
-    await ctx.reply(
-      "Ошибка выдачи ключа. Либо авторизация кончилась, либо порт был уже занят, либо что то еще. Попробуй снова ввести пин-код."
-    );
-    await ctx.reply(
-      "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
-      {
-        parse_mode: "Markdown",
-      }
-    );
+    await ctx.reply("Ошибка выдачи ключа. Попробуй снова ввести пин-код.");
+    await ctx.reply(...showError(e));
   }
 });
 

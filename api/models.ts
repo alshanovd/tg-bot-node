@@ -28,6 +28,7 @@ export interface Add {
 export interface MyContext<U extends Update = Update> extends Context<U> {
   session: {
     cookie: string;
+    deleteMsgs: number[];
   };
 }
 
@@ -50,10 +51,10 @@ export interface Inbound {
 }
 
 export interface ClinetStats {
-  id: 1;
-  inboundId: 1;
-  enable: true;
-  email: "tallinv2";
-  up: 3745590308;
-  down: 38486199109;
+  id: number;
+  inboundId: number;
+  enable: boolean;
+  email: string;
+  up: number;
+  down: number;
 }

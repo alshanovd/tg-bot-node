@@ -52,3 +52,22 @@ export const handleError = async (e: object, ctx: any) => {
     }
   );
 };
+
+export async function deleteClient(url: string, id: string, cookie: string) {
+  const deleteUrl = url + "/xui/inbound/del/" + id;
+  return axios.post<Response<number>>(
+    deleteUrl,
+    {},
+    { headers: { Cookie: cookie } }
+  );
+}
+
+export function showError(e: object): [string, object] {
+  return [
+    "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
+    // "```json\n" + JSON.stringify(e) + "\n```",
+    {
+      parse_mode: "Markdown",
+    },
+  ];
+}
