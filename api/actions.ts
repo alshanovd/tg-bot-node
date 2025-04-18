@@ -1,9 +1,9 @@
 import { Markup } from "telegraf";
-import { deleteClientButtons, showError, url } from "./utls";
-import { CtxFunc } from "./models";
+import { CtxActionFunc } from "./models";
 import { deleteClient, getClinetsRequest } from "./requests";
+import { deleteClientButtons, showError, url } from "./utls";
 
-export function deleteUserAction(): [RegExp, CtxFunc] {
+export function deleteUserAction(): [RegExp, CtxActionFunc] {
   return [
     /^delete_(\d+)$/,
     async (ctx) => {
@@ -25,7 +25,7 @@ export function deleteUserAction(): [RegExp, CtxFunc] {
   ];
 }
 
-export function showAllClientsAction(): [string, CtxFunc] {
+export function showAllClientsAction(): [string, CtxActionFunc] {
   return [
     "all_users",
     async (ctx) => {
@@ -47,7 +47,7 @@ export function showAllClientsAction(): [string, CtxFunc] {
   ];
 }
 
-export function deleteCancelAction(): [string, CtxFunc] {
+export function deleteCancelAction(): [string, CtxActionFunc] {
   return [
     "delete_cancel",
     async (ctx) => {
@@ -58,7 +58,7 @@ export function deleteCancelAction(): [string, CtxFunc] {
   ];
 }
 
-export function deleteClientAction(): [string, CtxFunc] {
+export function deleteClientAction(): [string, CtxActionFunc] {
   return [
     "delete_user",
     async (ctx) => {
@@ -83,7 +83,7 @@ export function deleteClientAction(): [string, CtxFunc] {
   ];
 }
 
-export function addClientAction(): [string, CtxFunc] {
+export function addClientAction(): [string, CtxActionFunc] {
   return [
     "add_user",
     async (ctx) => {

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { CtxFunc } from "./models";
-import { url } from "./utls";
 import { Markup } from "telegraf";
+import { CtxCommandFunc } from "./models";
+import { url } from "./utls";
 
 const authButtons = Markup.inlineKeyboard([
   [Markup.button.callback("Показать всех", "all_users")],
@@ -9,7 +9,7 @@ const authButtons = Markup.inlineKeyboard([
   [Markup.button.callback("Удалить пользователя", "delete_user")],
 ]);
 
-export function startCommand(): [string, CtxFunc] {
+export function startCommand(): [string, CtxCommandFunc] {
   return [
     "start",
     async (ctx) => {
@@ -18,7 +18,7 @@ export function startCommand(): [string, CtxFunc] {
   ];
 }
 
-export function authCommand(): [string, CtxFunc] {
+export function authCommand(): [string, CtxCommandFunc] {
   return [
     `${process.env.PIN}`,
     async (ctx) => {

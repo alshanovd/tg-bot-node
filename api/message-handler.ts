@@ -1,17 +1,19 @@
 import { message } from "telegraf/filters";
 import { getFormData } from "./formdata";
-import { CtxFunc } from "./models";
-import { concatKey, showError, url } from "./utls";
 import { addClientRequest } from "./requests";
+import { concatKey, showError, url } from "./utls";
 
-export function messageHandler(): [any, CtxFunc] {
+export function messageHandler(): [any, (ctx: any) => Promise<any>] {
   return [
     message("text"),
     async (ctx) => {
       const {
         message: { text },
       } = ctx;
-      await ctx.reply("Пробуем выдать ключик для " + text + "...");
+      const title = await ctx.reply(
+        "Пробуем выдать ключик для " + text + "..."
+      );
+      ctx.session.deleteMsgs.push(title.message_id);
       try {
         if (!text.trim()) throw Error();
         const { formdata, id } = getFormData(text);

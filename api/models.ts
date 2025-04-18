@@ -1,5 +1,8 @@
-import { type Context } from "telegraf";
+import * as tt from "Telegraf/src/telegram-types";
+import { Middleware, NarrowedContext, type Context } from "telegraf";
 import type { Update } from "telegraf/types";
+import { MatchedMiddleware } from "telegraf/typings/composer";
+import { NonemptyReadonlyArray } from "telegraf/typings/core/helpers/util";
 
 export type Response<T> = {
   success: boolean;
@@ -59,4 +62,10 @@ export interface ClinetStats {
   down: number;
 }
 
-export type CtxFunc = (ctx: any) => Promise<any>;
+export type CtxActionFunc = MatchedMiddleware<MyContext, "callback_query">[0];
+
+export type CtxCommandFunc = NonemptyReadonlyArray<
+  Middleware<
+    NarrowedContext<MyContext, tt.MountMap["text"]> & tt.CommandContextExtn
+  >
+>[0];

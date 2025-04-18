@@ -1,7 +1,6 @@
-import axios from "axios";
 import { Markup, Telegraf } from "telegraf";
-import { Add, Inbound, Response } from "./models";
 import { InlineKeyboardButton } from "telegraf/types";
+import { Inbound } from "./models";
 
 export const webhookConfig: Telegraf.LaunchOptions["webhook"] = {
   domain: process.env.DOMAIN,
