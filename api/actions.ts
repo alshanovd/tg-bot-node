@@ -90,7 +90,8 @@ export function addClientAction(): [string, CtxFunc] {
       if (ctx.session.deleteMsgs.length) {
         await ctx.deleteMessages(ctx.session.deleteMsgs);
       }
-      await ctx.reply("Кому выдать ключик? Напиши имя:");
+      const title = await ctx.reply("Кому выдать ключик? Напиши имя:");
+      ctx.session.deleteMsgs.push(title.message_id);
     },
   ];
 }
