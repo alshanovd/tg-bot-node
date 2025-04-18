@@ -87,6 +87,9 @@ export function addClientAction(): [string, CtxFunc] {
   return [
     "add_user",
     async (ctx) => {
+      if (ctx.session.deleteMsgs.length) {
+        await ctx.deleteMessages(ctx.session.deleteMsgs);
+      }
       await ctx.reply("Кому выдать ключик? Напиши имя:");
     },
   ];
