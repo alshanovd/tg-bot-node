@@ -3,6 +3,11 @@ import { Markup, Telegraf } from "telegraf";
 import { Add, Inbound, Response } from "./models";
 import { InlineKeyboardButton } from "telegraf/types";
 
+export const webhookConfig: Telegraf.LaunchOptions["webhook"] = {
+  domain: process.env.DOMAIN,
+  port: 4321,
+};
+
 export function concatKey(
   protocol: string,
   id: string,
@@ -20,46 +25,6 @@ export function uuidv4() {
       +c ^
       (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
     ).toString(16)
-  );
-}
-
-export async function addClientRequest(
-  url: string,
-  formdata: FormData,
-  cookie: string
-) {
-  return axios.post<Response<Add>>(url + "/xui/inbound/add", formdata, {
-    headers: { Cookie: cookie },
-  });
-}
-
-export async function getClinetsRequest(url: string, cookie: string) {
-  const listUrl = url + "/xui/inbound/list";
-  return axios.post<Response<Inbound[]>>(listUrl, new FormData(), {
-    headers: { Cookie: cookie },
-  });
-}
-
-export const webhookConfig: Telegraf.LaunchOptions["webhook"] = {
-  domain: process.env.DOMAIN,
-  port: 4321,
-};
-
-export const handleError = async (e: object, ctx: any) => {
-  return await ctx.reply(
-    "```json\n" + JSON.stringify(e).slice(0, 150) + "... \n```",
-    {
-      parse_mode: "Markdown",
-    }
-  );
-};
-
-export async function deleteClient(url: string, id: string, cookie: string) {
-  const deleteUrl = url + "/xui/inbound/del/" + id;
-  return axios.post<Response<number>>(
-    deleteUrl,
-    {},
-    { headers: { Cookie: cookie } }
   );
 }
 
@@ -86,7 +51,7 @@ export function reduceFn(
   return buttons;
 }
 
-export function deleteButtons(
+export function deleteClientButtons(
   users: Inbound[]
 ): InlineKeyboardButton.CallbackButton[][] {
   const buttons: InlineKeyboardButton.CallbackButton[][] = users.reduce(
@@ -96,3 +61,5 @@ export function deleteButtons(
   buttons.push([Markup.button.callback("Никого не удаляем", "delete_cancel")]);
   return buttons;
 }
+
+export const url = "http://" + process.env.HOST + ":" + process.env.PORT;

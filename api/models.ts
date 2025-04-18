@@ -58,3 +58,5 @@ export interface ClinetStats {
   up: number;
   down: number;
 }
+
+export type CtxFunc = (ctx: any) => Promise<any>;
