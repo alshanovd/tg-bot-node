@@ -1,4 +1,4 @@
-import * as tt from "Telegraf/src/telegram-types";
+import * as tt from "telegraf/src/telegram-types";
 import { Middleware, NarrowedContext, type Context } from "telegraf";
 import type { Update } from "telegraf/types";
 import { MatchedMiddleware } from "telegraf/typings/composer";
