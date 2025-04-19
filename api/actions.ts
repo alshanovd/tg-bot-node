@@ -1,7 +1,7 @@
 import { Markup } from "telegraf";
 import { CtxActionFunc } from "./models";
 import { deleteClient, getClinetsRequest } from "./requests";
-import { deleteClientButtons, showError, url } from "./utls";
+import { deleteClientButtons, showError } from "./utls";
 
 export function deleteUserAction(): [RegExp, CtxActionFunc] {
   return [
@@ -14,7 +14,7 @@ export function deleteUserAction(): [RegExp, CtxActionFunc] {
       const cookie = ctx.session.cookie;
       await ctx.reply("Удаляем пользователя с ID - " + id + "...");
       try {
-        const respond = await deleteClient(url, id, cookie);
+        const respond = await deleteClient(id, cookie);
         if (respond.data.success) {
           await ctx.reply("Пользователь удален!");
         }
@@ -35,7 +35,7 @@ export function showAllClientsAction(): [string, CtxActionFunc] {
       const title = await ctx.reply("Запрашиваем список пользователей...");
       ctx.session.deleteMsgs.push(title.message_id);
       try {
-        const respond = await getClinetsRequest(url, ctx.session.cookie);
+        const respond = await getClinetsRequest(ctx.session.cookie);
         const list = await ctx.reply(
           respond.data.obj.map((o) => o.remark).join("\n")
         );
@@ -68,7 +68,7 @@ export function deleteClientAction(): [string, CtxActionFunc] {
       const title = await ctx.reply("Запрашиваем список пользователей...");
       ctx.session.deleteMsgs.push(title.message_id);
       try {
-        const respond = await getClinetsRequest(url, ctx.session.cookie);
+        const respond = await getClinetsRequest(ctx.session.cookie);
         const buttons = deleteClientButtons(respond.data.obj);
         const list = await ctx.reply(
           "Кого удаляем?",

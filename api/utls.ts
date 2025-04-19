@@ -2,11 +2,6 @@ import { Markup, Telegraf } from "telegraf";
 import { InlineKeyboardButton } from "telegraf/types";
 import { Inbound } from "./models";
 
-export const webhookConfig: Telegraf.LaunchOptions["webhook"] = {
-  domain: process.env.DOMAIN,
-  port: 4321,
-};
-
 export function concatKey(
   protocol: string,
   id: string,
@@ -60,5 +55,3 @@ export function deleteClientButtons(
   buttons.push([Markup.button.callback("Никого не удаляем", "delete_cancel")]);
   return buttons;
 }
-
-export const url = "http://" + process.env.HOST + ":" + process.env.PORT;

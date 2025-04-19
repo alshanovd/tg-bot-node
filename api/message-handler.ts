@@ -1,7 +1,8 @@
 import { message } from "telegraf/filters";
 import { getFormData } from "./formdata";
 import { addClientRequest } from "./requests";
-import { concatKey, showError, url } from "./utls";
+import { concatKey, showError } from "./utls";
+import { url } from "./config";
 
 export function messageHandler(): [any, (ctx: any) => Promise<any>] {
   return [
@@ -17,11 +18,7 @@ export function messageHandler(): [any, (ctx: any) => Promise<any>] {
       try {
         if (!text.trim()) throw Error();
         const { formdata, id } = getFormData(text);
-        const response = await addClientRequest(
-          url,
-          formdata,
-          ctx.session.cookie
-        );
+        const response = await addClientRequest(formdata, ctx.session.cookie);
 
         if (!response.data.success) {
           throw Error("response.data.success = false");

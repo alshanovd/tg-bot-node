@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Markup } from "telegraf";
 import { CtxCommandFunc } from "./models";
-import { url } from "./utls";
+import { url } from "./config";
 
 const authButtons = Markup.inlineKeyboard([
   [Markup.button.callback("Показать всех", "all_users")],

@@ -9,7 +9,7 @@ import {
 import { authCommand, startCommand } from "./commands";
 import { messageHandler } from "./message-handler";
 import { MyContext } from "./models";
-import { webhookConfig } from "./utls";
+import { webhookConfig } from "./config";
 
 const bot = new Telegraf<MyContext>(process.env.BOT_TOKEN, {
   telegram: { webhookReply: false },
